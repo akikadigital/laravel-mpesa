@@ -1,6 +1,6 @@
 {
     "name": "akika/laravel-mpesa",
-    "description": "Mpesa Daraja package for Larave supporting Laravel version 5 and above.",
+    "description": "A cool Mpesa Daraja package for Larave supporting Laravel version 5 and above.",
     "homepage": "https://github.com/Akika-Digital/laravel-mpesa",
     "type": "package",
     "keywords": [
