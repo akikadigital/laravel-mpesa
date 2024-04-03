@@ -20,12 +20,25 @@
     "autoload": {
         "psr-4": {
             "Akika\\LaravelMpesa\\": "src/"
-        }
+        },
+        "config": [
+          "mpesa.php"
+        ]
     },
     "authors": [
         {
             "name": "Felix Nyabwari",
             "email": "fenicfelix@gmail.com"
         }
-    ]
+    ],
+    "extra": {
+    "laravel": {
+      "providers": [
+        "Akika\\LaravelMpesa\\MpesaServiceProvider"
+      ],
+      "aliases": {
+        "Mpesa": "Akika\\LaravelMpesa\\Facades\\Mpesa"
+      }
+    }
+  }
 }
