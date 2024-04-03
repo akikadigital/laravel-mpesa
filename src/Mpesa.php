@@ -11,7 +11,6 @@ class Mpesa
     public function __construct()
     {
         $this->url = config('mpesa.env') === 'sandbox' ? 'https://sandbox.safaricom.co.ke' : 'https://api.safaricom.co.ke';
-        dd(config('mpesa'));
     }
 
     public function hello()
@@ -44,18 +43,16 @@ class Mpesa
 
     public function fetchToken()
     {
-        // $token = Token::first();
+        $token = Token::first();
 
-        // if (!$token || $token->timeToExpiry() <= 30) {
-        //     $token = $this->generateToken();
-        //     Token::create([
-        //         "access_token" => $token->access_token,
-        //         "requested_at" => now(),
-        //         "expires_at" => now()->addSeconds($token->expires_in)
-        //     ]);
-        // }
-
-        $token = $this->generateToken();
+        if (!$token || $token->timeToExpiry() <= 30) {
+            $token = $this->generateToken();
+            Token::create([
+                "access_token" => $token->access_token,
+                "requested_at" => now(),
+                "expires_at" => now()->addSeconds($token->expires_in)
+            ]);
+        }
 
         return $token->access_token;
     }

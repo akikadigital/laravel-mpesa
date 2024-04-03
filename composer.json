@@ -2,7 +2,7 @@
     "name": "akika/laravel-mpesa",
     "description": "A cool Mpesa Daraja package for Larave supporting Laravel version 5 and above.",
     "homepage": "https://github.com/Akika-Digital/laravel-mpesa",
-    "type": "package",
+    "type": "library",
     "keywords": [
         "mpesa",
         "daraja",
@@ -13,17 +13,16 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": "^7.1|^8.0",
-        "illuminate/support": "^5.0|^6.0|^7.0|^8.0"
+        "php": "^8.0|^8.1|^8.2",
+        "illuminate/support": "^8.0 | ^9.0 | ^10.0 | ^11.0",
+		"illuminate/http":"^8.0 | ^9.0 | ^10.0 | ^11.0",
+		"guzzlehttp/guzzle": "^7.5"
     },
     "license": "MIT",
     "autoload": {
         "psr-4": {
             "Akika\\LaravelMpesa\\": "src/"
-        },
-        "config": [
-          "mpesa.php"
-        ]
+        }
     },
     "authors": [
         {
@@ -32,13 +31,13 @@
         }
     ],
     "extra": {
-    "laravel": {
-      "providers": [
-        "Akika\\LaravelMpesa\\MpesaServiceProvider"
-      ],
-      "aliases": {
-        "Mpesa": "Akika\\LaravelMpesa\\Facades\\Mpesa"
-      }
-    }
-  }
+		"laravel": {
+			"providers": [
+				"Akika\\LaravelMpesa\\MpesaServiceProvider"
+			],
+			"aliases": {
+				"Mpesa": "Akika\\LaravelMpesa\\Facades\\Mpesa"
+			}
+		}
+  	}
 }
