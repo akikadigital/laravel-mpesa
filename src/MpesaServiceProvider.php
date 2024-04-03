@@ -35,6 +35,9 @@ class MpesaServiceProvider extends ServiceProvider
             // Register migrations
             $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
+            /// Register routes
+            $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+
             $this->publishes([
                 __DIR__ . '/../config/mpesa.php' => config_path('mpesa.php')
             ], 'config');
