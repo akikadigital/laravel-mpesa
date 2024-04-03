@@ -1,6 +1,6 @@
 <?php
 
-use Akika\LaravelMpesa\Controllers\TestController;
+use Akika\LaravelMpesa\Mpesa;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,4 +16,5 @@ use Illuminate\Support\Facades\Route;
 
 // create a route linking to TestController@testToken
 
-// Route::get('/token', [TestController::class, 'testToken']);
+// create a route group called laravel-mpesa
+
