@@ -63,7 +63,7 @@ trait MpesaTrait
     {
         $timestamp = Carbon::now()->format('YmdHis');
         $shortcode = config('mpesa.shortcode');
-        $passkey = config('mpesa.lipa_na_mpesa_online_passkey');
+        $passkey = config('mpesa.stk_passkey');
         $password = base64_encode($shortcode . $passkey . $timestamp);
 
         return $password;

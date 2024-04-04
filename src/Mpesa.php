@@ -61,8 +61,8 @@ class Mpesa
         $data = [
             'ShortCode'     => config('mpesa.shortcode'),
             'ResponseType'   => 'Completed', // [Canceled | Completed] this is the default action value that determines what M-PESA will do in the scenario that your endpoint is unreachable or is unable to respond on time.
-            'ConfirmationURL' => config('mpesa.confirmation_url'), // This is the URL that receives payment notification once payment has been completed successfully on M-PESA.
-            'ValidationURL' => config('mpesa.validation_url') // This is the URL that is only used when a Merchant (Partner) requires to validate the details of the payment before accepting.
+            'ConfirmationURL' => config('mpesa.stk_confirmation_url'), // This is the URL that receives payment notification once payment has been completed successfully on M-PESA.
+            'ValidationURL' => config('mpesa.stk_validation_url') // This is the URL that is only used when a Merchant (Partner) requires to validate the details of the payment before accepting.
             // For example, a bank would want to verify if an account number exists in their platform before accepting a payment from the customer.
         ];
 
@@ -242,7 +242,7 @@ class Mpesa
             "Remarks"                   =>  $remarks ?? "please", // Comments that are sent along with the transaction.
             "Occasion"                  =>  "", // Optional Parameter.
             "ResultURL"                 =>  config('mpesa.reversal_result_url'),
-            "QueueTimeOutURL"           =>  config('mpesa.timeout_url'),
+            "QueueTimeOutURL"           =>  config('mpesa.reversal_timeout_url'),
         ];
         return $this->makeRequest($url, $data);
     }
@@ -284,8 +284,8 @@ class Mpesa
             'PartyB' => $receiverShortCode,
             'AccountReference' => $accountReference,
             'Remarks' => $remarks ?? 'Tax remittance',
-            'QueueTimeOutURL' => config('mpesa.b2c_timeout_url'),
-            'ResultURL' => config('mpesa.b2c_result_url')
+            'QueueTimeOutURL' => config('mpesa.tax_remittance_timeout_url'),
+            'ResultURL' => config('mpesa.tax_remittance_result_url')
         ];
         return $this->makeRequest($url, $data);
     }
