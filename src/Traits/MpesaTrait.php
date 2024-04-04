@@ -63,7 +63,7 @@ trait MpesaTrait
     {
         $timestamp = Carbon::now()->format('YmdHis');
         $shortcode = config('mpesa.shortcode');
-        $passkey = config('mpesa.lipa_na_mpesa_online_passkey');
+        $passkey = config('mpesa.stk_passkey');
         $password = base64_encode($shortcode . $passkey . $timestamp);
 
         return $password;
@@ -86,5 +86,15 @@ trait MpesaTrait
         $phoneNumber = str_replace(" ", "", $phoneNumber); // remove spaces
         $phone_number = "254" . substr($phoneNumber, -9); // remove leading 0 and replace with 254
         return $phone_number;
+    }
+
+    function isValidUrl($url) {
+        // check if $url is a valid url and has not include keywords like mpesa,safaricom etc
+        if (filter_var($url, FILTER_VALIDATE_URL)) {
+            if (strpos($url, 'mpesa') !== false || strpos($url, 'safaricom') !== false) {
+                return false;
+            }
+            return true;
+        }
     }
 }
