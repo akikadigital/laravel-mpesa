@@ -2,6 +2,10 @@
 
 namespace Akika\LaravelMpesa\Traits;
 
+use Carbon\Carbon;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
+
 trait MpesaTrait
 {
     function generateToken()
@@ -10,34 +14,77 @@ trait MpesaTrait
         $consumer_secret = config('mpesa.consumer_secret');
 
         $url = $this->url . '/oauth/v1/generate?grant_type=client_credentials';
-        info("TOKEN_URL: " . $url);
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        // generate base64 encoded string of consumer key and consumer secret
-        $credentials = base64_encode($consumer_key . ':' . $consumer_secret);
 
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Authorization: Basic ' . $credentials));
-        curl_setopt($curl, CURLOPT_HEADER, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $curl_response = curl_exec($curl);
+        $response = Http::withBasicAuth($consumer_key, $consumer_secret)
+            ->get($url);
 
-        curl_close($curl);
-
-        return json_decode($curl_response);
+        return $response;
     }
 
-    function performCurlRequest($url, $body)
+    function makeRequest($url, $body)
     {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Authorization:Bearer ' . $this->fetchToken()));
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        curl_close($ch);
+        // $ch = curl_init();
+        // curl_setopt($ch, CURLOPT_URL, $url);
+        // curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Authorization:Bearer ' . $this->fetchToken()));
+        // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        // curl_setopt($ch, CURLOPT_POST, true);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $response = curl_exec($ch);
+        // curl_close($ch);
+        // return $response;
+
+        // Convert the above code to use Http
+        $response = Http::withToken($this->fetchToken())
+            ->acceptJson()
+            ->post($url, $body);
+
         return $response;
+    }
+
+    function getTransactionIdentifier($type)
+    {
+        $type = strtolower($type);
+        switch ($type) {
+            case "msisdn":
+                $x = 1;
+                break;
+            case "tillnumber":
+                $x = 2;
+                break;
+            case "shortcode":
+                $x = 4;
+                break;
+        }
+        return $x;
+    }
+
+    function generatePassword()
+    {
+        $timestamp = Carbon::now()->format('YmdHis');
+        $shortcode = config('mpesa.shortcode');
+        $passkey = config('mpesa.lipa_na_mpesa_online_passkey');
+        $password = base64_encode($shortcode . $passkey . $timestamp);
+
+        return $password;
+    }
+
+    function generateCertificate()
+    {
+        if (config('mpesa.env') == 'sandbox') {
+            $publicKey = File::get(__DIR__ . '/../../certificates/SandboxCertificate.cer');
+        } else {
+            $publicKey = File::get(__DIR__ . '/../../certificates/ProductionCertificate.cer');
+        }
+        openssl_public_encrypt(config('mpesa.initiator_password'), $encrypted, $publicKey, OPENSSL_PKCS1_PADDING);
+
+        return base64_encode($encrypted);
+    }
+
+    function sanitizePhoneNumber($phoneNumber)
+    {
+        $phoneNumber = str_replace(" ", "", $phoneNumber); // remove spaces
+        $phone_number = "254" . substr($phoneNumber, -9); // remove leading 0 and replace with 254
+        return $phone_number;
     }
 }
