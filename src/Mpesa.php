@@ -10,16 +10,34 @@ class Mpesa
 {
     use MpesaTrait;
 
+    public $environment;
     public $url;
+    public $consumerKey;
+    public $consumerSecret;
+
+    public $initiatorName;
 
     public function __construct()
     {
-        $this->url = config('mpesa.env') === 'sandbox' ? 'https://sandbox.safaricom.co.ke' : 'https://api.safaricom.co.ke';
+        $this->environment = config('mpesa.env');
+        $this->consumerKey = config('mpesa.consumer_key');
+        $this->consumerSecret = config('mpesa.consumer_secret');
+
+        $this->initiatorName = config('mpesa.initiator_name');
+
+        $this->url = $this->environment === 'sandbox' ? 'https://sandbox.safaricom.co.ke' : 'https://api.safaricom.co.ke';
     }
 
-    public function hello()
+    public function index()
     {
-        return 'Hello from Mpesa';
+        try {
+            $this->getBalance();
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => '01',
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 
     public function fetchToken()
@@ -42,17 +60,23 @@ class Mpesa
     {
         $url = $this->url . '/mpesa/accountbalance/v1/query';
         $data = [
-            'Initiator'             => config('mpesa.initiator_name'), // This is the credential/username used to authenticate the transaction request
+            'Initiator'             => $this->initiatorName, // This is the credential/username used to authenticate the transaction request
             'SecurityCredential'    => $this->generateCertificate(), // Base64 encoded string of the M-PESA short code and password, which is encrypted using M-PESA public key and validates the transaction on M-PESA Core system.
             'CommandID'             => 'AccountBalance', // A unique command is passed to the M-PESA system.
             'PartyA'                => config('mpesa.shortcode'), // The shortcode of the organization querying for the account balance.
             'IdentifierType'        => $this->getTransactionIdentifier("shortcode"), // Type of organization querying for the account balance.
             'Remarks'               => "balance", // String sequence of characters up to 100
-            'QueueTimeOutURL'       => config('mpesa.balance_result_url'),
-            'ResultURL'             => config('mpesa.balance_timeout_url')
+            'QueueTimeOutURL'       => config('mpesa.balance_timeout_url'),
+            'ResultURL'             => config('mpesa.balance_result_url')
         ];
 
-        return $this->makeRequest($url, $data);
+        // check if $data['ResultURL'] is set and that it is a valid url
+        if ($this->isValidUrl($data['ResultURL'])) {
+            return $this->makeRequest($url, $data);
+        } else {
+            // throw an exception instead
+            throw new \Exception('Invalid ResultURL');
+        }
     }
 
     public function c2bRegisterUrl()
@@ -86,7 +110,13 @@ class Mpesa
             'CallBackURL'           => config('mpesa.stk_callback_url'),
         ];
 
-        return $this->makeRequest($url, $data);
+        // check if $data['CallBackURL] is set and that it is a valid url
+        if ($this->isValidUrl($data['CallBackURL'])) {
+            return $this->makeRequest($url, $data);
+        } else {
+            // throw an exception instead
+            throw new \Exception('Invalid CallBackURL');
+        }
     }
 
     public function stkPushStatus($checkoutRequestID)
@@ -113,7 +143,7 @@ class Mpesa
         */
         $data = [
             'OriginatorConversationID' => $oversationId, // This is a unique string you specify for every API request you simulate
-            'InitiatorName'         =>  config('mpesa.initiator_name'), // This is an API user created by the Business Administrator of the M-PESA
+            'InitiatorName'         =>  $this->initiatorName, // This is an API user created by the Business Administrator of the M-PESA
             'SecurityCredential'    =>  $this->generateCertificate(), // This is the value obtained after encrypting the API initiator password.
             'CommandID'             =>  $commandID, // This is a unique command that specifies B2C transaction type.
             'Amount'                =>  floor($amount), // remove decimal points
@@ -125,14 +155,20 @@ class Mpesa
             'ResultURL'             =>  config('mpesa.b2c_result_url'),
         ];
 
-        return $this->makeRequest($url, $data);
+        // check if $data['ResultURL] is set and that it is a valid url
+        if ($this->isValidUrl($data['ResultURL'])) {
+            return $this->makeRequest($url, $data);
+        } else {
+            // throw an exception instead
+            throw new \Exception('Invalid ResultURL');
+        }
     }
 
     public function validatedB2CTransaction($commandID, $msisdn, $amount, $remarks, $idNumber, $ocassion = null)
     {
         $url = $this->url . '/mpesa/b2c/v1/paymentrequest';
         $data = [
-            'InitiatorName'         =>  config('mpesa.initiator_name'),
+            'InitiatorName'         =>  $this->initiatorName,
             'SecurityCredential'    =>  $this->generateCertificate(),
             'CommandID'             =>  $commandID,
             'Amount'                =>  floor($amount), // remove decimal points
@@ -147,7 +183,13 @@ class Mpesa
             'ResultURL'             =>  config('mpesa.b2c_result_url'),
         ];
 
-        return $this->makeRequest($url, $data);
+        // check if $data['ResultURL] is set and that it is a valid url
+        if ($this->isValidUrl($data['ResultURL'])) {
+            return $this->makeRequest($url, $data);
+        } else {
+            // throw an exception instead
+            throw new \Exception('Invalid ResultURL');
+        }
     }
 
     /*
@@ -160,7 +202,7 @@ class Mpesa
         //DisburseFundsToBusiness
         $url = $this->url . '/mpesa/b2b/v1/paymentrequest';
         $data = [
-            'Initiator'                 =>  config('mpesa.initiator_name'),
+            'Initiator'                 =>  $this->initiatorName,
             'SecurityCredential'        =>  $this->generateCertificate(),
             'CommandID'                 =>  'BusinessPayBill', // This specifies the type of transaction being performed. There are five allowed values on the API: BusinessPayBill, BusinessBuyGoods, DisburseFundsToBusiness, BusinessToBusinessTransfer or MerchantToMerchantTransfer.
             'SenderIdentifierType'      =>  $this->getTransactionIdentifier("shortcode"),
@@ -175,7 +217,13 @@ class Mpesa
             'ResultURL'                 =>  config('mpesa.b2b_result_url')
         ];
 
-        return $this->makeRequest($url, $data);
+        // check if $data['ResultURL] is set and that it is a valid url
+        if ($this->isValidUrl($data['ResultURL'])) {
+            return $this->makeRequest($url, $data);
+        } else {
+            // throw an exception instead
+            throw new \Exception('Invalid ResultURL');
+        }
     }
 
     /*
@@ -188,7 +236,7 @@ class Mpesa
         //DisburseFundsToBusiness
         $url = $this->url . '/mpesa/b2b/v1/paymentrequest';
         $data = [
-            'Initiator'                 =>  config('mpesa.initiator_name'),
+            'Initiator'                 =>  $this->initiatorName,
             'SecurityCredential'        =>  $this->generateCertificate(),
             'CommandID'                 =>  'BusinessBuyGoods', // This specifies the type of transaction being performed. There are five allowed values on the API: BusinessPayBill, BusinessBuyGoods, DisburseFundsToBusiness, BusinessToBusinessTransfer or MerchantToMerchantTransfer.
             'SenderIdentifierType'      =>  $this->getTransactionIdentifier("shortcode"),
@@ -203,14 +251,20 @@ class Mpesa
             'ResultURL'                 =>  config('mpesa.b2b_result_url')
         ];
 
-        return $this->makeRequest($url, $data);
+        // check if $data['ResultURL] is set and that it is a valid url
+        if ($this->isValidUrl($data['ResultURL'])) {
+            return $this->makeRequest($url, $data);
+        } else {
+            // throw an exception instead
+            throw new \Exception('Invalid ResultURL');
+        }
     }
 
     public function getTransactionStatus($transactionId, $identifierType, $remarks, $originalConversationId)
     {
         $url = $this->url . '/mpesa/transactionstatus/v1/query';
         $data = [
-            'Initiator'                 =>  config('mpesa.initiator_name'),
+            'Initiator'                 =>  $this->initiatorName,
             'SecurityCredential'        =>  $this->generateCertificate(),
             'CommandID'                 =>  'TransactionStatusQuery',
             'TransactionID'             =>  $transactionId, //Organization Receiving the funds. e.g. LXXXXXX1234
@@ -222,7 +276,14 @@ class Mpesa
             'ResultURL'                 =>  config('mpesa.transaction_status_result_url'),
             'QueueTimeOutURL'           =>  config('mpesa.transaction_status_timeout_url'),
         ];
-        return $this->makeRequest($url, $data);
+
+        // check if $data['ResultURL] is set and that it is a valid url
+        if ($this->isValidUrl($data['ResultURL'])) {
+            return $this->makeRequest($url, $data);
+        } else {
+            // throw an exception instead
+            throw new \Exception('Invalid ResultURL');
+        }
     }
 
     /* Reverses a C2B M-Pesa transaction.
@@ -232,7 +293,7 @@ class Mpesa
     {
         $url = $this->url . '/mpesa/reversal/v1/request';
         $data = [
-            'Initiator'                 =>  config('mpesa.initiator_name'), // The name of the initiator to initiate the request.
+            'Initiator'                 =>  $this->initiatorName, // The name of the initiator to initiate the request.
             'SecurityCredential'        =>  $this->generateCertificate(),
             'CommandID'                 =>  'TransactionReversal',
             "TransactionID"             =>  $transactionId, // Payment transaction ID of the transaction that is being reversed. e.g. LKXXXX1234
@@ -244,7 +305,14 @@ class Mpesa
             "ResultURL"                 =>  config('mpesa.reversal_result_url'),
             "QueueTimeOutURL"           =>  config('mpesa.reversal_timeout_url'),
         ];
-        return $this->makeRequest($url, $data);
+
+        // check if $data['ResultURL] is set and that it is a valid url
+        if ($this->isValidUrl($data['ResultURL'])) {
+            return $this->makeRequest($url, $data);
+        } else {
+            // throw an exception instead
+            throw new \Exception('Invalid ResultURL');
+        }
     }
 
     public function dynamicQR($merchantName, $refNo, $amount, $trxCode, $cpi, $size)
@@ -271,10 +339,11 @@ class Mpesa
         return $this->makeRequest($url, $data);
     }
 
-    public function taxRemittance($amount, $receiverShortCode, $accountReference, $remarks) {
+    public function taxRemittance($amount, $receiverShortCode, $accountReference, $remarks)
+    {
         $url = $this->url . '/mpesa/b2b/v1/remittax';
         $data = [
-            'Initiator' => config('mpesa.initiator_name'),
+            'Initiator' => $this->initiatorName,
             'SecurityCredential' => $this->generateCertificate(),
             'CommandID' => 'BusinessPayment',
             'SenderIdentifierType' => $this->getTransactionIdentifier("shortcode"),
@@ -287,11 +356,19 @@ class Mpesa
             'QueueTimeOutURL' => config('mpesa.tax_remittance_timeout_url'),
             'ResultURL' => config('mpesa.tax_remittance_result_url')
         ];
-        return $this->makeRequest($url, $data);
+
+        // check if $data['ResultURL] is set and that it is a valid url
+        if ($this->isValidUrl($data['ResultURL'])) {
+            return $this->makeRequest($url, $data);
+        } else {
+            // throw an exception instead
+            throw new \Exception('Invalid ResultURL');
+        }
     }
 
     // Gives the business and customers a one-stop end-to-end platform to send, receive, pay and reconcile all payments.
-    public function billManagerOptin($email, $phoneNumber) {
+    public function billManagerOptin($email, $phoneNumber)
+    {
         $url = "https://api.safaricom.co.ke/v1/billmanager-invoice/optin";
         $data = [
             'ShortCode' => config('mpesa.shortcode'),
@@ -304,7 +381,8 @@ class Mpesa
         return $this->makeRequest($url, $data);
     }
 
-    public function sendInvoice($reference, $billedTo, $phoneNumber, $billingPeriod, $invoiceName, $dueDate, $amount, $items) {
+    public function sendInvoice($reference, $billedTo, $phoneNumber, $billingPeriod, $invoiceName, $dueDate, $amount, $items)
+    {
         $url = "https://api.safaricom.co.ke/v1/billmanager-invoice/single-invoicing";
         /*
         Items sample:
