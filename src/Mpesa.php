@@ -84,21 +84,6 @@ class Mpesa
     // --------------------------------- C2B Transactions ---------------------------------
 
     /*
-    public function c2bSimulate($amount, $phoneNumber, $billRefNumber, $commandID = 'CustomerPayBillOnline')
-    {
-        $url = $this->url . '/mpesa/c2b/v1/simulate';
-        $data = [
-            'ShortCode'     => $this->mpesaShortcode,
-            'CommandID'     => $commandID, // CustomerPayBillOnline | CustomerBuyGoodsOnline
-            'Amount'        => floor($amount), // remove decimal points
-            'Msisdn'        => $this->sanitizePhoneNumber($phoneNumber),
-            'BillRefNumber' => $billRefNumber
-        ];
-
-        return $this->makeRequest($url, $data);
-    } */
-
-    /*
     *   Register the validation and confirmation urls for the C2B transactions
     *   This is the first step in the C2B transaction process
     *   The validation url is used to validate the transaction before it is processed
@@ -114,6 +99,28 @@ class Mpesa
             'ResponseType'   => 'Completed', // [Canceled | Completed] this is the default action value that determines what M-PESA will do in the scenario that your endpoint is unreachable or is unable to respond on time.
             'ConfirmationURL' => config('mpesa.stk_confirmation_url'),
             'ValidationURL' => config('mpesa.stk_validation_url')
+        ];
+
+        return $this->makeRequest($url, $data);
+    }
+
+    /*
+    *   This API is used to simulate payment requests from clients and to your API.
+    *   It basically simulates a payment made from the client phone's STK/SIM Toolkit menu, and enables you to receive the payment requests in real time.
+    *   CommandID in this case can be CustomerPayBillOnline or CustomerBuyGoodsOnline
+    *       - CustomerPayBillOnline : When a customer goes to M-Pesa > Lipa na M-Pesa > Paybill and enters your paybill number.
+    *       - CustomerBuyGoodsOnline : When a customer goes to M-Pesa > Lipa na M-Pesa > Buy Goods and Services and enters your till number.
+    */
+
+    public function c2bSimulate($amount, $phoneNumber, $billRefNumber, $commandID = 'CustomerPayBillOnline')
+    {
+        $url = $this->url . '/mpesa/c2b/v1/simulate';
+        $data = [
+            'ShortCode'     => $this->mpesaShortcode,
+            'CommandID'     => $commandID, // CustomerPayBillOnline | CustomerBuyGoodsOnline
+            'Amount'        => floor($amount), // remove decimal points
+            'Msisdn'        => $this->sanitizePhoneNumber($phoneNumber),
+            'BillRefNumber' => $billRefNumber
         ];
 
         return $this->makeRequest($url, $data);
