@@ -42,7 +42,7 @@ trait MpesaTrait
         return $response;
     }
 
-    function getTransactionIdentifier($type)
+    function getIdentifierType($type)
     {
         $type = strtolower($type);
         switch ($type) {
