@@ -18,7 +18,7 @@ php artisan vendor:publish --provider="Akika\LaravelMpesa\MpesaServiceProvider"
 
 This will generate a mpesa.php file in your config directory where you can set your Mpesa credentials and other configuration options.
 
-## ENV Setup
+## .env file Setup
 
 Add the following configurations into the .env file
 
