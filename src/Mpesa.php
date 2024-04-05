@@ -29,18 +29,6 @@ class Mpesa
         $this->url = config('mpesa.env') === 'sandbox' ? 'https://sandbox.safaricom.co.ke' : 'https://api.safaricom.co.ke';
     }
 
-    public function index()
-    {
-        try {
-            $this->getBalance();
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => '01',
-                'message' => $e->getMessage()
-            ]);
-        }
-    }
-
     // --------------------------------- Token Generation ---------------------------------
 
     /*
