@@ -49,7 +49,7 @@ MPESA_TAX_REMITTANCE_RESULT_URL=
 
 ## Function Responses
 
-All responses, except the token generation response, confirm to the responses documented on the daraja portal.
+All responses, except the token generation response, conform to the responses documented on the daraja portal.
 
 ## Usage
 
