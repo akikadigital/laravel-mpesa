@@ -63,32 +63,15 @@ $mpesa = new Mpesa();
 
 ### Fetching Token
 
-You can fetch the token required for Mpesa API calls:
+You can fetch the token required for Mpesa API calls as follows:
 
 ```php
 $token = $mpesa->fetchToken();
 ```
 
-Safaricom generates Tokens in the below format.
-
-```bash
-{
-   "access_token": "c9SQxWWhmdVRlyh0zh8gZDTkubVF",
-   "expires_in":"3599"
-}
-```
-
-The token is valid for 3599 seconds. This Token is saved in the tokens table and can be used for 55 minutes or 3549 seconds. After that, a new token is generated. This reduces the number of calls when performing transactions.
-
-Therefore, the response we return is just the access_token. From the above example, we return:
-
-```bash
-c9SQxWWhmdVRlyh0zh8gZDTkubVF
-```
-
 ### Getting Account Balance
 
-To use the Mpesa functionalities, you need to initialize the Mpesa class:
+You can fetch mpesa account balance as follows:
 
 ```php
 $balance = $mpesa->getBalance();
