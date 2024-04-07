@@ -47,6 +47,8 @@ MPESA_TAX_REMITTANCE_TIMEOUT_URL=
 MPESA_TAX_REMITTANCE_RESULT_URL=
 ```
 
+NOTE: The mpesa.php config file sets the default `MPESA_ENV` value to `sandbox`. This will always load sandbox urls.
+
 ## Function Responses
 
 All responses, except the token generation response, conform to the responses documented on the daraja portal.
