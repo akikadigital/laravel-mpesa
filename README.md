@@ -1,6 +1,6 @@
-## Laravel Mpesa Package by Akika Digital
+## Laravel Mpesa Package by [Akika Digital](https://akika.digital)
 
-This Laravel package provides convenient methods for integrating Mpesa API functionalities into your Laravel application.
+This Laravel package provides convenient methods for integrating [Mpesa Daraja API's](https://developer.safaricom.co.ke/APIs) functionalities into your Laravel application.
 
 ## Installation
 
