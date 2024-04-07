@@ -1,4 +1,4 @@
-## Laravel Mpesa Package by Akika
+## Laravel Mpesa Package by Akika Digital
 
 This Laravel package provides convenient methods for integrating Mpesa API functionalities into your Laravel application.
 
