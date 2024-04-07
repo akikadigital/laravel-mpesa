@@ -8,32 +8,9 @@ use Illuminate\Support\Facades\Http;
 
 trait MpesaTrait
 {
-    function generateToken()
-    {
-        $consumer_key = config('mpesa.consumer_key');
-        $consumer_secret = config('mpesa.consumer_secret');
-
-        $url = $this->url . '/oauth/v1/generate?grant_type=client_credentials';
-
-        $response = Http::withBasicAuth($consumer_key, $consumer_secret)
-            ->get($url);
-
-        return $response;
-    }
 
     function makeRequest($url, $body)
     {
-        // $ch = curl_init();
-        // curl_setopt($ch, CURLOPT_URL, $url);
-        // curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Authorization:Bearer ' . $this->fetchToken()));
-        // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        // curl_setopt($ch, CURLOPT_POST, true);
-        // curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
-        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        // $response = curl_exec($ch);
-        // curl_close($ch);
-        // return $response;
-
         // Convert the above code to use Http
         $response = Http::withToken($this->fetchToken())
             ->acceptJson()
@@ -88,7 +65,8 @@ trait MpesaTrait
         return $phone_number;
     }
 
-    function isValidUrl($url) {
+    function isValidUrl($url)
+    {
         // check if $url is a valid url and has not include keywords like mpesa,safaricom etc
         if (filter_var($url, FILTER_VALIDATE_URL)) {
             if (strpos($url, 'mpesa') !== false || strpos($url, 'safaricom') !== false) {

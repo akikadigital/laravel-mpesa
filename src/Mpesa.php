@@ -5,6 +5,7 @@ namespace Akika\LaravelMpesa;
 use Akika\LaravelMpesa\Models\Token;
 use Akika\LaravelMpesa\Traits\MpesaTrait;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
 
 class Mpesa
 {
@@ -16,6 +17,9 @@ class Mpesa
     public $mpesaShortcode;
     public $securityCredential;
 
+    public $consumerKey;
+    public $consumerSecret;
+
     /**
      *   Initialize the Mpesa class with the necessary credentials
      */
@@ -26,7 +30,15 @@ class Mpesa
         $this->initiatorName = config('mpesa.initiator_name');
         $this->securityCredential = $this->generateCertificate();
 
+        $this->consumerKey = config('mpesa.consumer_key');
+        $this->consumerSecret = config('mpesa.consumer_secret');
+
         $this->url = config('mpesa.env') === 'sandbox' ? 'https://sandbox.safaricom.co.ke' : 'https://api.safaricom.co.ke';
+    }
+
+    public function index()
+    {
+        echo $this->fetchToken();
     }
 
     // --------------------------------- Token Generation ---------------------------------
@@ -38,18 +50,12 @@ class Mpesa
 
     public function fetchToken()
     {
-        $token = Token::first();
+        $url = $this->url . '/oauth/v1/generate?grant_type=client_credentials';
 
-        if (!$token || $token->timeToExpiry() <= 30) {
-            $token = json_decode($this->generateToken());
-            Token::create([
-                "access_token" => $token->access_token,
-                "requested_at" => now(),
-                "expires_at" => now()->addSeconds($token->expires_in)
-            ]);
-        }
+        $response = Http::withBasicAuth($this->consumerKey, $this->consumerSecret)
+            ->get($url);
 
-        return $token->access_token;
+        return $response;
     }
 
     // --------------------------------- Account Balance ---------------------------------
