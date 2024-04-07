@@ -27,9 +27,9 @@ class MpesaServiceProvider extends ServiceProvider
     {
         // Load package migrations
         if ($this->app->runningInConsole()) {
-            // Register PublishMpesaMigrations command
+            // Register InstallAkikaMpesaPackage command
             $this->commands([
-                Commands\PublishMpesaMigrations::class,
+                Commands\InstallAkikaMpesaPackage::class,
             ]);
 
             // Register migrations

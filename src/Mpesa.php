@@ -9,16 +9,16 @@ use Carbon\Carbon;
 class Mpesa
 {
     use MpesaTrait;
-    
+
     public $url;
 
     public $initiatorName;
     public $mpesaShortcode;
     public $securityCredential;
 
-    /*
-    *   Initialize the Mpesa class with the necessary credentials
-    */
+    /**
+     *   Initialize the Mpesa class with the necessary credentials
+     */
 
     public function __construct()
     {
@@ -31,10 +31,10 @@ class Mpesa
 
     // --------------------------------- Token Generation ---------------------------------
 
-    /*
-    *   Fetch the token from the database if it exists and is not expired
-    *   If it does not exist or is expired, generate a new token and save it to the database
-    */
+    /**
+     *   Fetch the token from the database if it exists and is not expired
+     *   If it does not exist or is expired, generate a new token and save it to the database
+     */
 
     public function fetchToken()
     {
@@ -54,9 +54,9 @@ class Mpesa
 
     // --------------------------------- Account Balance ---------------------------------
 
-    /*
-    *   Get the balance of the M-Pesa account on daraja
-    */
+    /**
+     *   Get the balance of the M-Pesa account on daraja
+     */
 
     public function getBalance()
     {
@@ -83,13 +83,13 @@ class Mpesa
 
     // --------------------------------- C2B Transactions ---------------------------------
 
-    /*
-    *   Register the validation and confirmation urls for the C2B transactions
-    *   This is the first step in the C2B transaction process
-    *   The validation url is used to validate the transaction before it is processed
-    *   The confirmation url is used to confirm the transaction after it has been processed
-    *   For example, a bank would want to verify if an account number exists in their platform before accepting a payment from the customer.
-    */
+    /**
+     *   Register the validation and confirmation urls for the C2B transactions
+     *   This is the first step in the C2B transaction process
+     *   The validation url is used to validate the transaction before it is processed
+     *   The confirmation url is used to confirm the transaction after it has been processed
+     *   For example, a bank would want to verify if an account number exists in their platform before accepting a payment from the customer.
+     */
 
     public function c2bRegisterUrl()
     {
@@ -104,13 +104,13 @@ class Mpesa
         return $this->makeRequest($url, $data);
     }
 
-    /*
-    *   This API is used to simulate payment requests from clients and to your API.
-    *   It basically simulates a payment made from the client phone's STK/SIM Toolkit menu, and enables you to receive the payment requests in real time.
-    *   CommandID in this case can be CustomerPayBillOnline or CustomerBuyGoodsOnline
-    *       - CustomerPayBillOnline : When a customer goes to M-Pesa > Lipa na M-Pesa > Paybill and enters your paybill number.
-    *       - CustomerBuyGoodsOnline : When a customer goes to M-Pesa > Lipa na M-Pesa > Buy Goods and Services and enters your till number.
-    */
+    /**
+     *   This API is used to simulate payment requests from clients and to your API.
+     *   It basically simulates a payment made from the client phone's STK/SIM Toolkit menu, and enables you to receive the payment requests in real time.
+     *   CommandID in this case can be CustomerPayBillOnline or CustomerBuyGoodsOnline
+     *       - CustomerPayBillOnline : When a customer goes to M-Pesa > Lipa na M-Pesa > Paybill and enters your paybill number.
+     *       - CustomerBuyGoodsOnline : When a customer goes to M-Pesa > Lipa na M-Pesa > Buy Goods and Services and enters your till number.
+     */
 
     public function c2bSimulate($amount, $phoneNumber, $billRefNumber, $commandID = 'CustomerPayBillOnline')
     {
@@ -126,12 +126,12 @@ class Mpesa
         return $this->makeRequest($url, $data);
     }
 
-    /*
-    *   This API is used to initiate online payment on behalf of a customer.
-    *   It is used to simulate the process of a customer paying for goods or services.
-    *   The transaction moves money from the customer’s account to the business account.
-    *   The customer will receive a propmt to enter their M-Pesa pin to complete the transaction.
-    */
+    /**
+     *   This API is used to initiate online payment on behalf of a customer.
+     *   It is used to simulate the process of a customer paying for goods or services.
+     *   The transaction moves money from the customer’s account to the business account.
+     *   The customer will receive a propmt to enter their M-Pesa pin to complete the transaction.
+     */
 
     public function stkPush($accountNumber, $phoneNumber, $amount, $transactionDesc = null)
     {
@@ -159,10 +159,10 @@ class Mpesa
         }
     }
 
-    /*
-    *  This API is used to query the result of a STK Push transaction.
-    *  This is done by using the M-Pesa code and the phone number used in the transaction.
-    */
+    /**
+     *  This API is used to query the result of a STK Push transaction.
+     *  This is done by using the M-Pesa code and the phone number used in the transaction.
+     */
 
     public function stkPushStatus($checkoutRequestID)
     {
@@ -177,10 +177,10 @@ class Mpesa
         return $this->makeRequest($url, $data);
     }
 
-    /* 
-    *   Reverses a C2B M-Pesa transaction.
-    *   Once a customer pays and there is a need to reverse the transaction, the organization will use this API to reverse the amount.
-    */
+    /** 
+     *   Reverses a C2B M-Pesa transaction.
+     *   Once a customer pays and there is a need to reverse the transaction, the organization will use this API to reverse the amount.
+     */
     public function reverse($transactionId, $amount, $receiverShortCode, $remarks)
     {
         $url = $this->url . '/mpesa/reversal/v1/request';
@@ -209,14 +209,14 @@ class Mpesa
 
     // --------------------------------- B2C Transactions ---------------------------------
 
-    /*
-    *   This API enables Business to Customer (B2C) transactions between a company and customers who are the end-users of its products or services.
-    *   It is used to send money from a company to customers e.g. salaries, winnings, refunds, etc.
-    *   CommandID is a unique command that specifies B2C transaction type.
-    *       - SalaryPayment: This supports sending money to both registered and unregistered M-Pesa customers.
-    *       - BusinessPayment: This is a normal business to customer payment, supports only M-PESA registered customers.
-    *       - PromotionPayment: This is a promotional payment to customers. The M-PESA notification message is a congratulatory message. Supports only M-PESA registered customers.
-    */
+    /**
+     *   This API enables Business to Customer (B2C) transactions between a company and customers who are the end-users of its products or services.
+     *   It is used to send money from a company to customers e.g. salaries, winnings, refunds, etc.
+     *   CommandID is a unique command that specifies B2C transaction type.
+     *       - SalaryPayment: This supports sending money to both registered and unregistered M-Pesa customers.
+     *       - BusinessPayment: This is a normal business to customer payment, supports only M-PESA registered customers.
+     *       - PromotionPayment: This is a promotional payment to customers. The M-PESA notification message is a congratulatory message. Supports only M-PESA registered customers.
+     */
 
     public function b2cTransaction($oversationId, $commandID, $msisdn, $amount, $remarks, $ocassion = null)
     {
@@ -244,10 +244,10 @@ class Mpesa
         }
     }
 
-    /*
-    *   This API enables Business to Customer (B2C) transactions between a company and customers who are the end-users of its products or services.
-    *   Unlike b2cTransaction, this method validates the transaction before processing it.
-    */
+    /**
+     *   This API enables Business to Customer (B2C) transactions between a company and customers who are the end-users of its products or services.
+     *   Unlike b2cTransaction, this method validates the transaction before processing it.
+     */
 
     public function validatedB2CTransaction($commandID, $msisdn, $amount, $remarks, $idNumber, $ocassion = null)
     {
@@ -279,10 +279,10 @@ class Mpesa
 
     // --------------------------------- B2B Transactions ---------------------------------
 
-    /*
-    *   This API enables you to pay bills directly from your business account to a pay bill number, or a paybill store. You can use this API to pay on behalf of a consumer/requester.
-    *   The transaction moves money from your MMF/Working account to the recipient’s utility account.
-    */
+    /**
+     *   This API enables you to pay bills directly from your business account to a pay bill number, or a paybill store. You can use this API to pay on behalf of a consumer/requester.
+     *   The transaction moves money from your MMF/Working account to the recipient’s utility account.
+     */
 
     public function b2bPaybill($destShortcode, $amount, $remarks, $accountNumber, $requester = null)
     {
@@ -313,10 +313,10 @@ class Mpesa
         }
     }
 
-    /*
-    *   This API enables you to pay for goods and services directly from your business account to a till number, merchant store number or Merchant HO. You can also use this API to pay a merchant on behalf of a consumer/requestor. 
-    *   The transaction moves money from your MMF/Working account to the recipient’s merchant account.
-    */
+    /**
+     *   This API enables you to pay for goods and services directly from your business account to a till number, merchant store number or Merchant HO. You can also use this API to pay a merchant on behalf of a consumer/requestor. 
+     *   The transaction moves money from your MMF/Working account to the recipient’s merchant account.
+     */
 
     public function b2bBuyGoods($destShortcode, $amount, $remarks, $accountNumber, $requester = null)
     {
@@ -347,9 +347,9 @@ class Mpesa
         }
     }
 
-    /*
-    *   This API is used to query the status of a B2B transaction.
-    */
+    /**
+     *   This API is used to query the status of a B2B transaction.
+     */
 
     public function getTransactionStatus($transactionId, $identifierType, $remarks, $originalConversationId)
     {
@@ -379,16 +379,16 @@ class Mpesa
 
     // --------------------------------- QR Code ---------------------------------
 
-    /*
-    *   This  API is used to generate a QR code that can be used to make payments.
-    *   The QR code can be scanned by the customer to make payments.
-    *   Transaction Type. The supported types are:
-    *       - BG: Pay Merchant (Buy Goods).
-    *       - WA: Withdraw Cash at Agent Till.
-    *       - PB: Paybill or Business number.
-    *       - SM: Send Money(Mobile number)
-    *       - SB: Sent to Business. Business number CPI in MSISDN format.
-    */
+    /**
+     *   This  API is used to generate a QR code that can be used to make payments.
+     *   The QR code can be scanned by the customer to make payments.
+     *   Transaction Type. The supported types are:
+     *       - BG: Pay Merchant (Buy Goods).
+     *       - WA: Withdraw Cash at Agent Till.
+     *       - PB: Paybill or Business number.
+     *       - SM: Send Money(Mobile number)
+     *       - SB: Sent to Business. Business number CPI in MSISDN format.
+     */
 
     public function dynamicQR($merchantName, $refNo, $amount, $trxCode, $cpi, $size)
     {
@@ -406,14 +406,14 @@ class Mpesa
 
     // --------------------------------- Bill Manager ---------------------------------
 
-    /*
-    *   The first step in the bill manager process is to optin to the service.
-    *   This API is used to optin to the bill manager service.
-    */
+    /**
+     *   The first step in the bill manager process is to optin to the service.
+     *   This API is used to optin to the bill manager service.
+     */
 
     public function billManagerOptin($email, $phoneNumber)
     {
-        $url = "https://api.safaricom.co.ke/v1/billmanager-invoice/optin";
+        $url = $this->url . "/v1/billmanager-invoice/optin";
         $data = [
             'ShortCode' => $this->mpesaShortcode,
             'email' => $email,
@@ -425,20 +425,20 @@ class Mpesa
         return $this->makeRequest($url, $data);
     }
 
-    /*
-    *   This API is used to send an invoice to a customer.
-    *   The invoice can be for goods or services.
-    *   The invoice can have multiple items.
-        * Items sample:
+    /**
+     *   This API is used to send an invoice to a customer.
+     *   The invoice can be for goods or services.
+     *   The invoice can have multiple items.
+     * Items sample:
             $items[
                 'itemName' => 'Food',
                 'amount' => 100, // Optional
             ]
-    */
+     */
 
     public function sendInvoice($reference, $billedTo, $phoneNumber, $billingPeriod, $invoiceName, $dueDate, $amount, $items)
     {
-        $url = "https://api.safaricom.co.ke/v1/billmanager-invoice/single-invoicing";
+        $url = $this->url . "/v1/billmanager-invoice/single-invoicing";
         $data = [
             'externalReference' => $reference, // This is a unique invoice name on your system’s end. e.g. INV12345
             'billedFullName' => $billedTo, // Full name of the person being billed e.g. John Doe
@@ -455,10 +455,10 @@ class Mpesa
 
     // --------------------------------- Tax Remittance ---------------------------------
 
-    /*
-    *   This API is used to tax remmitance to the government.
-    *   It is used to send money from a company to the government.
-    */
+    /**
+     *   This API is used to tax remmitance to the government.
+     *   It is used to send money from a company to the government.
+     */
 
     public function taxRemittance($amount, $receiverShortCode, $accountReference, $remarks)
     {
