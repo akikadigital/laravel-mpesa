@@ -13,7 +13,7 @@ composer require akika/laravel-mpesa
 After installing the package, publish the configuration file using the following command:
 
 ```bash
-php artisan vendor:publish --provider="Akika\LaravelMpesa\MpesaServiceProvider"
+php artisan mpesa:install
 ```
 
 This will generate a mpesa.php file in your config directory where you can set your Mpesa credentials and other configuration options.
@@ -34,8 +34,6 @@ MPESA_STK_CONFIRMATION_URL=
 MPESA_STK_CALLBACK_URL=
 MPESA_BALANCE_RESULT_URL=
 MPESA_BALANCE_TIMEOUT_URL=
-MPESA_REVERSAL_URL=
-MPESA_TIMEOUT_URL=
 MPESA_TRANSACTION_STATUS_RESULT_URL=
 MPESA_TRANSACTION_STATUS_TIMEOUT_URL=
 MPESA_B2C_TIMEOUT_URL=
@@ -176,8 +174,10 @@ You can remit tax to the government:
 $response = $mpesa->taxRemittance($amount, $receiverShortCode, $accountReference, $remarks);
 ```
 
+## Function Responses
+
+All responses, except the token generation response, confirm to the responses documented on the daraja portal.
+
 ## License
 
-The Laravel Mpesa package is open-sourced software licensed under the MIT license.
-
-You can copy and paste this Markdown content into a README.md file for your Laravel Mpesa package.
+The Laravel Mpesa package is open-sourced software licensed under the MIT license. See the LICENSE file for details.
