@@ -68,7 +68,7 @@ $mpesa = new Mpesa();
 You can fetch the token required for Mpesa API calls as follows:
 
 ```php
-$token = $mpesa->fetchToken();
+$token = $mpesa->getToken();
 ```
 
 ### Getting Account Balance
