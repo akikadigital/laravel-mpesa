@@ -38,7 +38,7 @@ class Mpesa
 
     public function index()
     {
-        echo $this->fetchToken();
+        echo $this->getToken();
     }
 
     // --------------------------------- Token Generation ---------------------------------
@@ -48,7 +48,7 @@ class Mpesa
      *   If it does not exist or is expired, generate a new token and save it to the database
      */
 
-    public function fetchToken()
+    public function getToken()
     {
         $url = $this->url . '/oauth/v1/generate?grant_type=client_credentials';
 

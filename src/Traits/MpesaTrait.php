@@ -12,7 +12,7 @@ trait MpesaTrait
     function makeRequest($url, $body)
     {
         // Convert the above code to use Http
-        $response = Http::withToken($this->fetchToken())
+        $response = Http::withToken($this->getToken())
             ->acceptJson()
             ->post($url, $body);
 
