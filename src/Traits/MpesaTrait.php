@@ -15,14 +15,18 @@ trait MpesaTrait
      *   If it does not exist or is expired, generate a new token and save it to the database
      */
 
-    function getToken() {
+    function getToken()
+    {
         $url = $this->url . '/oauth/v1/generate?grant_type=client_credentials';
-
         $response = Http::withBasicAuth($this->consumerKey, $this->consumerSecret)
             ->get($url);
 
         return $response;
     }
+
+    /**
+     *  Make a request to the Mpesa API
+     */
 
     function makeRequest($url, $body)
     {
@@ -34,6 +38,10 @@ trait MpesaTrait
 
         return $response;
     }
+
+    /**
+     * Get the identifier type given the type
+     */
 
     function getIdentifierType($type)
     {
@@ -52,6 +60,10 @@ trait MpesaTrait
         return $x;
     }
 
+    /**
+     * Generate the password for the STK push
+     */
+
     function generatePassword()
     {
         $timestamp = Carbon::now()->format('YmdHis');
@@ -61,6 +73,10 @@ trait MpesaTrait
 
         return $password;
     }
+
+    /**
+     * Generate the certificate for the API
+     */
 
     function generateCertificate()
     {
@@ -74,6 +90,10 @@ trait MpesaTrait
         return base64_encode($encrypted);
     }
 
+    /**
+     * Sanitize the phone number by getting rid of the leading 0 and replacing it with 254
+     */
+
     function sanitizePhoneNumber($phoneNumber)
     {
         $phoneNumber = str_replace(" ", "", $phoneNumber); // remove spaces
@@ -81,11 +101,15 @@ trait MpesaTrait
         return $phone_number;
     }
 
+    /**
+     * Check if the URL is valid
+     */
+
     function isValidUrl($url)
     {
         // check if $url is a valid url and has not include keywords like mpesa,safaricom etc
         if (filter_var($url, FILTER_VALIDATE_URL)) {
-            if (strpos($url, 'mpesa') !== false || strpos($url, 'safaricom') !== false) {
+            if (strpos($url, 'mpesa') !== false || strpos($url, 'safaricom') !==false || strpos($url, 'daraja') !== false) {
                 return false;
             }
             return true;
