@@ -24,6 +24,7 @@ Add the following configurations into the .env file
 
 ```
 MPESA_ENV=
+MPESA_SHORTCODE=
 MPESA_CONSUMER_KEY=
 MPESA_CONSUMER_SECRET=
 MPESA_PASSKEY=
@@ -87,6 +88,20 @@ You can register validation and confirmation URLs for C2B transactions:
 
 ```php
 $response = $mpesa->c2bRegisterUrl();
+```
+
+You can register the C2B URLs using the provided command below:
+
+```php
+php artisan mpesa:register-c2b-urls
+```
+
+The above command requires you to have set the below variables in your env or in the config file:
+
+```
+MPESA_SHORTCODE=
+MPESA_STK_VALIDATION_URL=
+MPESA_STK_CONFIRMATION_URL=
 ```
 
 #### Simulating C2B Transactions
