@@ -41,23 +41,6 @@ class Mpesa
         echo $this->getToken();
     }
 
-    // --------------------------------- Token Generation ---------------------------------
-
-    /**
-     *   Fetch the token from the database if it exists and is not expired
-     *   If it does not exist or is expired, generate a new token and save it to the database
-     */
-
-    public function getToken()
-    {
-        $url = $this->url . '/oauth/v1/generate?grant_type=client_credentials';
-
-        $response = Http::withBasicAuth($this->consumerKey, $this->consumerSecret)
-            ->get($url);
-
-        return $response;
-    }
-
     // --------------------------------- Account Balance ---------------------------------
 
     /**

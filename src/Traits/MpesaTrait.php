@@ -8,11 +8,27 @@ use Illuminate\Support\Facades\Http;
 
 trait MpesaTrait
 {
+    // --------------------------------- Token Generation ---------------------------------
+
+    /**
+     *   Fetch the token from the database if it exists and is not expired
+     *   If it does not exist or is expired, generate a new token and save it to the database
+     */
+
+    function getToken() {
+        $url = $this->url . '/oauth/v1/generate?grant_type=client_credentials';
+
+        $response = Http::withBasicAuth($this->consumerKey, $this->consumerSecret)
+            ->get($url);
+
+        return $response;
+    }
 
     function makeRequest($url, $body)
     {
         // Convert the above code to use Http
-        $response = Http::withToken($this->getToken())
+        $token = json_decode($this->getToken());
+        $response = Http::withToken($token->access_token)
             ->acceptJson()
             ->post($url, $body);
 
