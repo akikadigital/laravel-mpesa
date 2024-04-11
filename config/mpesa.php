@@ -4,12 +4,12 @@ return [
     // Define mpesa environment
     'env' => env('MPESA_ENV', 'sandbox'),
 
+    // Define mpesa shortcode
+    'shortcode' => env('MPESA_SHORTCODE'),
+
     // Define mpesa credentials
     'consumer_key' => env('MPESA_CONSUMER_KEY'),
     'consumer_secret' => env('MPESA_CONSUMER_SECRET'),
-
-    // Define mpesa shortcode
-    'shortcode' => env('MPESA_SHORTCODE'),
 
     // ------------- c2b configs -------------
     'stk_passkey' => env('MPESA_PASSKEY'),
