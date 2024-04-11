@@ -38,7 +38,8 @@ class Mpesa
 
     public function index()
     {
-        echo $this->getToken();
+        $token = json_decode($this->getToken());
+        echo $token->access_token;
     }
 
     // --------------------------------- Account Balance ---------------------------------

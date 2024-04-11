@@ -50,10 +50,14 @@ class AkikaRegisterC2BUrls extends Command
         $mpesa = new Mpesa();
         $result = json_decode($mpesa->c2bRegisterUrl());
 
-        if ($result->ResponseCode == 0) {
-            $this->info('C2B URLs registered successfully.');
-        } else {
-            $this->error('Failed to register C2B URLs.');
+        try {
+            if ($result->ResponseCode == 0) {
+                $this->info('C2B URLs registered successfully.');
+            } else {
+                $this->error('Failed to register C2B URLs.');
+            }
+        } catch (\Throwable $th) {
+            $this->error($result->errorMessage);
         }
     }
 }
