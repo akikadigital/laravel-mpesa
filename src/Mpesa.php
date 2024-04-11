@@ -36,12 +36,6 @@ class Mpesa
         $this->url = config('mpesa.env') === 'sandbox' ? 'https://sandbox.safaricom.co.ke' : 'https://api.safaricom.co.ke';
     }
 
-    public function index()
-    {
-        $token = json_decode($this->getToken());
-        echo $token->access_token;
-    }
-
     // --------------------------------- Account Balance ---------------------------------
 
     /**
