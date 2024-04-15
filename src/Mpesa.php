@@ -36,12 +36,6 @@ class Mpesa
         $this->url = config('mpesa.env') === 'sandbox' ? 'https://sandbox.safaricom.co.ke' : 'https://api.safaricom.co.ke';
     }
 
-    public function index()
-    {
-        $token = json_decode($this->getToken());
-        echo $token->access_token;
-    }
-
     // --------------------------------- Account Balance ---------------------------------
 
     /**
@@ -63,12 +57,22 @@ class Mpesa
         ];
 
         // check if $data['ResultURL'] is set and that it is a valid url
-        if ($this->isValidUrl($data['ResultURL'])) {
-            return $this->makeRequest($url, $data);
-        } else {
+        if (!$this->isValidUrl($data['ResultURL'])) {
             // throw an exception instead
             throw new \Exception('Invalid ResultURL');
         }
+
+        // make the request
+        $result = $this->makeRequest($url, $data);
+
+        // log the request and response data if debug is enabled on the config file
+        if (config('mpesa.debug')) {
+            info('Balance Request Data: ' . json_encode($data));
+            info('Balance Response Data: ' . $result);
+        }
+
+        // return the result
+        return $result;
     }
 
     // --------------------------------- C2B Transactions ---------------------------------
@@ -83,7 +87,7 @@ class Mpesa
 
     public function c2bRegisterUrl()
     {
-        $url = $this->url . '/mpesa/c2b/v1/registerurl';
+        $url = $this->url . '/mpesa/c2b/v2/registerurl';
         $data = [
             'ShortCode'     => $this->mpesaShortcode,
             'ResponseType'   => 'Completed', // [Canceled | Completed] this is the default action value that determines what M-PESA will do in the scenario that your endpoint is unreachable or is unable to respond on time.
@@ -91,7 +95,28 @@ class Mpesa
             'ValidationURL' => config('mpesa.stk_validation_url')
         ];
 
-        return $this->makeRequest($url, $data);
+        // check if $data['ConfirmationURL] and $data['ValidationURL] are set and that they are valid urls
+        if (!$this->isValidUrl($data['ConfirmationURL'])) {
+            // throw an exception instead
+            throw new \Exception('Invalid ConfirmationURL');
+        }
+
+        if (!$this->isValidUrl($data['ValidationURL'])) {
+            // throw an exception instead
+            throw new \Exception('Invalid ValidationURL');
+        }
+
+        // make the request
+        $result = $this->makeRequest($url, $data);
+
+        // log the request and response data if debug is enabled on the config file
+        if (config('mpesa.debug')) {
+            info('C2B Register URL Data: ' . json_encode($data));
+            info('C2B Register URL Response Data: ' . $result);
+        }
+
+        // return the result
+        return $result;
     }
 
     /**
@@ -113,7 +138,17 @@ class Mpesa
             'BillRefNumber' => $billRefNumber
         ];
 
-        return $this->makeRequest($url, $data);
+        // make the request
+        $result = $this->makeRequest($url, $data);
+
+        // log the request and response data if debug is enabled on the config file
+        if (config('mpesa.debug')) {
+            info('C2B Simulate Data: ' . json_encode($data));
+            info('C2B Simulate Response Data: ' . $result);
+        }
+
+        // return the result
+        return $result;
     }
 
     /**
@@ -141,12 +176,22 @@ class Mpesa
         ];
 
         // check if $data['CallBackURL] is set and that it is a valid url
-        if ($this->isValidUrl($data['CallBackURL'])) {
-            return $this->makeRequest($url, $data);
-        } else {
+        if (!$this->isValidUrl($data['CallBackURL'])) {
             // throw an exception instead
             throw new \Exception('Invalid CallBackURL');
         }
+
+        // make the request
+        $result = $this->makeRequest($url, $data);
+
+        // log the request and response data if debug is enabled on the config file
+        if (config('mpesa.debug')) {
+            info('STK Push Data: ' . json_encode($data));
+            info('STK Push Response Data: ' . $result);
+        }
+
+        // return the result
+        return $result;
     }
 
     /**
@@ -164,7 +209,17 @@ class Mpesa
             'CheckoutRequestID'     => $checkoutRequestID // This is a global unique identifier of the processed checkout transaction request.
         ];
 
-        return $this->makeRequest($url, $data);
+        // make the request
+        $result = $this->makeRequest($url, $data);
+
+        // log the request and response data if debug is enabled on the config file
+        if (config('mpesa.debug')) {
+            info('STK Push Status Data: ' . json_encode($data));
+            info('STK Push Status Response Data: ' . $result);
+        }
+
+        // return the result
+        return $result;
     }
 
     /** 
@@ -189,12 +244,28 @@ class Mpesa
         ];
 
         // check if $data['ResultURL] is set and that it is a valid url
-        if ($this->isValidUrl($data['ResultURL'])) {
-            return $this->makeRequest($url, $data);
-        } else {
+        if (!$this->isValidUrl($data['ResultURL'])) {
             // throw an exception instead
             throw new \Exception('Invalid ResultURL');
         }
+
+        // check if $data['QueueTimeOutURL] is set and that it is a valid url
+        if(!$this->isValidUrl($data['QueueTimeOutURL'])) {
+            // throw an exception instead
+            throw new \Exception('Invalid QueueTimeOutURL');
+        }
+
+        // make the request
+        $result = $this->makeRequest($url, $data);
+
+        // log the request and response data if debug is enabled on the config file
+        if (config('mpesa.debug')) {
+            info('Reversal Data: ' . json_encode($data));
+            info('Reversal Response Data: ' . $result);
+        }
+
+        // return the result
+        return $result;
     }
 
     // --------------------------------- B2C Transactions ---------------------------------
@@ -226,12 +297,27 @@ class Mpesa
         ];
 
         // check if $data['ResultURL] is set and that it is a valid url
-        if ($this->isValidUrl($data['ResultURL'])) {
-            return $this->makeRequest($url, $data);
-        } else {
+        if (!$this->isValidUrl($data['ResultURL'])) {
             // throw an exception instead
             throw new \Exception('Invalid ResultURL');
         }
+
+        if(!$this->isValidUrl($data['QueueTimeOutURL'])) {
+            // throw an exception instead
+            throw new \Exception('Invalid QueueTimeOutURL');
+        }
+
+        // make the request
+        $result = $this->makeRequest($url, $data);
+
+        // log the request and response data if debug is enabled on the config file
+        if (config('mpesa.debug')) {
+            info('B2C Transaction Data: ' . json_encode($data));
+            info('B2C Transaction Response Data: ' . $result);
+        }
+
+         // return the result
+        return $result;
     }
 
     /**
@@ -259,12 +345,27 @@ class Mpesa
         ];
 
         // check if $data['ResultURL] is set and that it is a valid url
-        if ($this->isValidUrl($data['ResultURL'])) {
-            return $this->makeRequest($url, $data);
-        } else {
+        if (!$this->isValidUrl($data['ResultURL'])) {
             // throw an exception instead
             throw new \Exception('Invalid ResultURL');
         }
+
+        if(!$this->isValidUrl($data['QueueTimeOutURL'])) {
+            // throw an exception instead
+            throw new \Exception('Invalid QueueTimeOutURL');
+        }
+
+        // make the request
+        $result = $this->makeRequest($url, $data);
+
+        // log the request and response data if debug is enabled on the config file
+        if (config('mpesa.debug')) {
+            info('Validated B2C Transaction Data: ' . json_encode($data));
+            info('Validated B2C Transaction Response Data: ' . $result);
+        }
+
+        // return the result
+        return $result;
     }
 
     // --------------------------------- B2B Transactions ---------------------------------
@@ -295,12 +396,28 @@ class Mpesa
         ];
 
         // check if $data['ResultURL] is set and that it is a valid url
-        if ($this->isValidUrl($data['ResultURL'])) {
-            return $this->makeRequest($url, $data);
-        } else {
+        if (!$this->isValidUrl($data['ResultURL'])) {
             // throw an exception instead
             throw new \Exception('Invalid ResultURL');
         }
+
+        // check if $data['QueueTimeOutURL] is set and that it is a valid url
+        if(!$this->isValidUrl($data['QueueTimeOutURL'])) {
+            // throw an exception instead
+            throw new \Exception('Invalid QueueTimeOutURL');
+        }
+
+        // make the request
+        $result = $this->makeRequest($url, $data);
+
+        // log the request and response data if debug is enabled on the config file
+        if (config('mpesa.debug')) {
+            info('B2B Paybill Data: ' . json_encode($data));
+            info('B2B Paybill Response Data: ' . $result);
+        }
+
+        // return the result
+        return $result;
     }
 
     /**
@@ -329,12 +446,28 @@ class Mpesa
         ];
 
         // check if $data['ResultURL] is set and that it is a valid url
-        if ($this->isValidUrl($data['ResultURL'])) {
-            return $this->makeRequest($url, $data);
-        } else {
+        if (!$this->isValidUrl($data['ResultURL'])) {
             // throw an exception instead
             throw new \Exception('Invalid ResultURL');
         }
+
+        // check if $data['QueueTimeOutURL] is set and that it is a valid url
+        if(!$this->isValidUrl($data['QueueTimeOutURL'])) {
+            // throw an exception instead
+            throw new \Exception('Invalid QueueTimeOutURL');
+        }
+
+        // make the request
+        $result = $this->makeRequest($url, $data);
+
+        // log the request and response data if debug is enabled on the config file
+        if (config('mpesa.debug')) {
+            info('B2B Buy Goods Data: ' . json_encode($data));
+            info('B2B Buy Goods Response Data: ' . $result);
+        }
+
+        // return the result
+        return $result;
     }
 
     /**
@@ -359,12 +492,28 @@ class Mpesa
         ];
 
         // check if $data['ResultURL] is set and that it is a valid url
-        if ($this->isValidUrl($data['ResultURL'])) {
-            return $this->makeRequest($url, $data);
-        } else {
+        if (!$this->isValidUrl($data['ResultURL'])) {
             // throw an exception instead
             throw new \Exception('Invalid ResultURL');
         }
+
+        // check if $data['QueueTimeOutURL] is set and that it is a valid url
+        if(!$this->isValidUrl($data['QueueTimeOutURL'])) {
+            // throw an exception instead
+            throw new \Exception('Invalid QueueTimeOutURL');
+        }
+
+        // make the request
+        $result = $this->makeRequest($url, $data);
+
+        // log the request and response data if debug is enabled on the config file
+        if (config('mpesa.debug')) {
+            info('Transaction Status Data: ' . json_encode($data));
+            info('Transaction Status Response Data: ' . $result);
+        }
+
+        // return the result
+        return $result;
     }
 
     // --------------------------------- QR Code ---------------------------------
@@ -391,7 +540,18 @@ class Mpesa
             'CPI' => $cpi, // Credit Party Identifier. Can be a Mobile Number, Business Number, Agent Till, Paybill or Business number, or Merchant Buy Goods.
             'Size' => $size // Size of the QR code image in pixels. QR code image will always be a square image.
         ];
-        return $this->makeRequest($url, $data);
+
+        // make the request
+        $result = $this->makeRequest($url, $data);
+
+        // log the request and response data if debug is enabled on the config file
+        if (config('mpesa.debug')) {
+            info('Dynamic QR Data: ' . json_encode($data));
+            info('Dynamic QR Response Data: ' . $result);
+        }
+
+        // return the result
+        return $result;
     }
 
     // --------------------------------- Bill Manager ---------------------------------
@@ -412,7 +572,24 @@ class Mpesa
             'logo' => config('mpesa.confirmation_url'), // Optional : Image to be embedded in the invoices and receipts sent to your customer.
             'callbackurl' => config('mpesa.bill_optin_callback_url')
         ];
-        return $this->makeRequest($url, $data);
+        
+        // check if $data['callbackurl] is set and that it is a valid url
+        if (!$this->isValidUrl($data['callbackurl'])) {
+            // throw an exception instead
+            throw new \Exception('Invalid callbackurl');
+        }
+
+        // make the request
+        $result = $this->makeRequest($url, $data);
+
+        // log the request and response data if debug is enabled on the config file
+        if (config('mpesa.debug')) {
+            info('Bill Manager Optin Data: ' . json_encode($data));
+            info('Bill Manager Optin Response Data: ' . $result);
+        }
+
+        // return the result
+        return $result;
     }
 
     /**
@@ -440,7 +617,17 @@ class Mpesa
             'invoiceItems' => $items // These are additional billable items that you need included in your invoice. 
         ];
 
-        return $this->makeRequest($url, $data);
+        // make the request
+        $result = $this->makeRequest($url, $data);
+
+        // log the request and response data if debug is enabled on the config file
+        if (config('mpesa.debug')) {
+            info('Send Invoice Data: ' . json_encode($data));
+            info('Send Invoice Response Data: ' . $result);
+        }
+
+        // return the result
+        return $result;
     }
 
     // --------------------------------- Tax Remittance ---------------------------------
@@ -469,11 +656,27 @@ class Mpesa
         ];
 
         // check if $data['ResultURL] is set and that it is a valid url
-        if ($this->isValidUrl($data['ResultURL'])) {
-            return $this->makeRequest($url, $data);
-        } else {
+        if (!$this->isValidUrl($data['ResultURL'])) {
             // throw an exception instead
             throw new \Exception('Invalid ResultURL');
         }
+
+        // check if $data['QueueTimeOutURL] is set and that it is a valid url
+        if(!$this->isValidUrl($data['QueueTimeOutURL'])) {
+            // throw an exception instead
+            throw new \Exception('Invalid QueueTimeOutURL');
+        }
+
+        // make the request
+        $result = $this->makeRequest($url, $data);
+
+        // log the request and response data if debug is enabled on the config file
+        if (config('mpesa.debug')) {
+            info('Tax Remittance Data: ' . json_encode($data));
+            info('Tax Remittance Response Data: ' . $result);
+        }
+
+        // return the result
+        return $result;
     }
 }
