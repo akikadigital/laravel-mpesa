@@ -25,7 +25,7 @@ trait MpesaTrait
     }
 
     /**
-     *  Make a request to the Mpesa API
+     *   Make a request to the Mpesa API
      */
 
     function makeRequest($url, $body)
@@ -40,7 +40,7 @@ trait MpesaTrait
     }
 
     /**
-     * Get the identifier type given the type
+     *   Get the identifier type given the type
      */
 
     function getIdentifierType($type)
@@ -61,7 +61,7 @@ trait MpesaTrait
     }
 
     /**
-     * Generate the password for the STK push
+     *   Generate the password for the STK push
      */
 
     function generatePassword()
@@ -75,7 +75,7 @@ trait MpesaTrait
     }
 
     /**
-     * Generate the certificate for the API
+     *   Generate the certificate for the API
      */
 
     function generateCertificate()
@@ -91,7 +91,7 @@ trait MpesaTrait
     }
 
     /**
-     * Sanitize the phone number by getting rid of the leading 0 and replacing it with 254
+     *   Sanitize the phone number by getting rid of the leading 0 and replacing it with 254
      */
 
     function sanitizePhoneNumber($phoneNumber)
@@ -102,7 +102,7 @@ trait MpesaTrait
     }
 
     /**
-     * Check if the URL is valid
+     *   Check if the URL is valid
      */
 
     function isValidUrl($url)
