@@ -6,15 +6,15 @@ return [
     'debug' => env('APP_DEBUG', true),
 
     // Define mpesa shortcode
-    'shortcode' => env('MPESA_SHORTCODE'),
+    'shortcode' => env('MPESA_SHORTCODE', '174379'),
 
     // Define mpesa credentials
-    'consumer_key' => env('MPESA_CONSUMER_KEY'),
-    'consumer_secret' => env('MPESA_CONSUMER_SECRET'),
+    'consumer_key' => env('MPESA_CONSUMER_KEY', 'Y2YTrWs5H3aShqYP74BBXOS3L5eBVbt4'),
+    'consumer_secret' => env('MPESA_CONSUMER_SECRET', 'UNLJuzkZnciQonQE'),
 
     // ------------- c2b configs -------------
-    'stk_passkey' => env('MPESA_PASSKEY'),
-    'initiator_name' => env('MPESA_INITIATOR_NAME'),
+    'stk_passkey' => env('MPESA_PASSKEY', 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919'),
+    'initiator_name' => env('MPESA_INITIATOR_NAME', 'testapi'),
     'initiator_password' => env('MPESA_INITIATOR_PASSWORD'),
     'stk_validation_url' => env('MPESA_STK_VALIDATION_URL'),
     'stk_confirmation_url' => env('MPESA_STK_CONFIRMATION_URL'),
