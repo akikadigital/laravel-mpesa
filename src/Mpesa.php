@@ -11,6 +11,7 @@ class Mpesa
 {
     use MpesaTrait;
 
+    public $environment;
     public $url;
 
     public $initiatorName;
@@ -33,7 +34,8 @@ class Mpesa
         $this->consumerKey = config('mpesa.consumer_key');
         $this->consumerSecret = config('mpesa.consumer_secret');
 
-        $this->url = config('mpesa.env') === 'sandbox' ? 'https://sandbox.safaricom.co.ke' : 'https://api.safaricom.co.ke';
+        $this->environment = config('mpesa.env');
+        $this->url = $this->environment === 'sandbox' ? 'https://sandbox.safaricom.co.ke' : 'https://api.safaricom.co.ke';
     }
 
     // --------------------------------- Account Balance ---------------------------------
@@ -90,6 +92,7 @@ class Mpesa
     public function c2bRegisterUrl()
     {
         $url = $this->url . '/mpesa/c2b/v2/registerurl';
+
         $data = [
             'ShortCode'     => $this->mpesaShortcode,
             'ResponseType'   => 'Completed', // [Canceled | Completed] this is the default action value that determines what M-PESA will do in the scenario that your endpoint is unreachable or is unable to respond on time.
@@ -273,7 +276,7 @@ class Mpesa
         }
 
         // check if $data['QueueTimeOutURL] is set and that it is a valid url
-        if(!$this->isValidUrl($data['QueueTimeOutURL'])) {
+        if (!$this->isValidUrl($data['QueueTimeOutURL'])) {
             // throw an exception instead
             throw new \Exception('Invalid QueueTimeOutURL');
         }
@@ -332,7 +335,7 @@ class Mpesa
             throw new \Exception('Invalid ResultURL');
         }
 
-        if(!$this->isValidUrl($data['QueueTimeOutURL'])) {
+        if (!$this->isValidUrl($data['QueueTimeOutURL'])) {
             // throw an exception instead
             throw new \Exception('Invalid QueueTimeOutURL');
         }
@@ -346,7 +349,7 @@ class Mpesa
             info('B2C Transaction Response Data: ' . $result);
         }
 
-         // return the result
+        // return the result
         return $result;
     }
 
@@ -388,7 +391,7 @@ class Mpesa
             throw new \Exception('Invalid ResultURL');
         }
 
-        if(!$this->isValidUrl($data['QueueTimeOutURL'])) {
+        if (!$this->isValidUrl($data['QueueTimeOutURL'])) {
             // throw an exception instead
             throw new \Exception('Invalid QueueTimeOutURL');
         }
@@ -447,7 +450,7 @@ class Mpesa
         }
 
         // check if $data['QueueTimeOutURL] is set and that it is a valid url
-        if(!$this->isValidUrl($data['QueueTimeOutURL'])) {
+        if (!$this->isValidUrl($data['QueueTimeOutURL'])) {
             // throw an exception instead
             throw new \Exception('Invalid QueueTimeOutURL');
         }
@@ -504,7 +507,7 @@ class Mpesa
         }
 
         // check if $data['QueueTimeOutURL] is set and that it is a valid url
-        if(!$this->isValidUrl($data['QueueTimeOutURL'])) {
+        if (!$this->isValidUrl($data['QueueTimeOutURL'])) {
             // throw an exception instead
             throw new \Exception('Invalid QueueTimeOutURL');
         }
@@ -559,7 +562,7 @@ class Mpesa
         }
 
         // check if $data['QueueTimeOutURL] is set and that it is a valid url
-        if(!$this->isValidUrl($data['QueueTimeOutURL'])) {
+        if (!$this->isValidUrl($data['QueueTimeOutURL'])) {
             // throw an exception instead
             throw new \Exception('Invalid QueueTimeOutURL');
         }
@@ -645,7 +648,7 @@ class Mpesa
             'logo' => config('mpesa.confirmation_url'), // Optional : Image to be embedded in the invoices and receipts sent to your customer.
             'callbackurl' => config('mpesa.bill_optin_callback_url')
         ];
-        
+
         // check if $data['callbackurl] is set and that it is a valid url
         if (!$this->isValidUrl($data['callbackurl'])) {
             // throw an exception instead
@@ -751,7 +754,7 @@ class Mpesa
         }
 
         // check if $data['QueueTimeOutURL] is set and that it is a valid url
-        if(!$this->isValidUrl($data['QueueTimeOutURL'])) {
+        if (!$this->isValidUrl($data['QueueTimeOutURL'])) {
             // throw an exception instead
             throw new \Exception('Invalid QueueTimeOutURL');
         }
