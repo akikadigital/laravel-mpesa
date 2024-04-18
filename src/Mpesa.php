@@ -21,21 +21,24 @@ class Mpesa
     public $consumerKey;
     public $consumerSecret;
 
+    public $debugMode;
+
     /**
      * Initialize the Mpesa class with the necessary credentials
      */
 
     public function __construct()
     {
+        $this->environment = config('mpesa.env');
+        $this->debugMode = config('mpesa.debug');
+        $this->url = $this->environment === 'sandbox' ? 'https://sandbox.safaricom.co.ke' : 'https://api.safaricom.co.ke';
+
         $this->mpesaShortcode = config('mpesa.shortcode');
         $this->initiatorName = config('mpesa.initiator_name');
         $this->securityCredential = $this->generateCertificate();
 
         $this->consumerKey = config('mpesa.consumer_key');
         $this->consumerSecret = config('mpesa.consumer_secret');
-
-        $this->environment = config('mpesa.env');
-        $this->url = $this->environment === 'sandbox' ? 'https://sandbox.safaricom.co.ke' : 'https://api.safaricom.co.ke';
     }
 
     // --------------------------------- Account Balance ---------------------------------
@@ -69,7 +72,7 @@ class Mpesa
         $result = $this->makeRequest($url, $data);
 
         // log the request and response data if debug is enabled on the config file
-        if (config('mpesa.debug')) {
+        if ($this->debugMode) {
             info('Balance Request Data: ' . json_encode($data));
             info('Balance Response Data: ' . $result);
         }
@@ -95,7 +98,7 @@ class Mpesa
 
         $data = [
             'ShortCode'     => $this->mpesaShortcode,
-            'ResponseType'   => 'Completed', // [Canceled | Completed] this is the default action value that determines what M-PESA will do in the scenario that your endpoint is unreachable or is unable to respond on time.
+            'ResponseType'   => 'Completed', // [Canceled | Completed] . Default is Completed.
             'ConfirmationURL' => config('mpesa.stk_confirmation_url'),
             'ValidationURL' => config('mpesa.stk_validation_url')
         ];
@@ -115,7 +118,7 @@ class Mpesa
         $result = $this->makeRequest($url, $data);
 
         // log the request and response data if debug is enabled on the config file
-        if (config('mpesa.debug')) {
+        if ($this->debugMode) {
             info('C2B Register URL Data: ' . json_encode($data));
             info('C2B Register URL Response Data: ' . $result);
         }
@@ -152,7 +155,7 @@ class Mpesa
         $result = $this->makeRequest($url, $data);
 
         // log the request and response data if debug is enabled on the config file
-        if (config('mpesa.debug')) {
+        if ($this->debugMode) {
             info('C2B Simulate Data: ' . json_encode($data));
             info('C2B Simulate Response Data: ' . $result);
         }
@@ -201,7 +204,7 @@ class Mpesa
         $result = $this->makeRequest($url, $data);
 
         // log the request and response data if debug is enabled on the config file
-        if (config('mpesa.debug')) {
+        if ($this->debugMode) {
             info('STK Push Data: ' . json_encode($data));
             info('STK Push Response Data: ' . $result);
         }
@@ -233,7 +236,7 @@ class Mpesa
         $result = $this->makeRequest($url, $data);
 
         // log the request and response data if debug is enabled on the config file
-        if (config('mpesa.debug')) {
+        if ($this->debugMode) {
             info('STK Push Status Data: ' . json_encode($data));
             info('STK Push Status Response Data: ' . $result);
         }
@@ -285,7 +288,7 @@ class Mpesa
         $result = $this->makeRequest($url, $data);
 
         // log the request and response data if debug is enabled on the config file
-        if (config('mpesa.debug')) {
+        if ($this->debugMode) {
             info('Reversal Data: ' . json_encode($data));
             info('Reversal Response Data: ' . $result);
         }
@@ -344,7 +347,7 @@ class Mpesa
         $result = $this->makeRequest($url, $data);
 
         // log the request and response data if debug is enabled on the config file
-        if (config('mpesa.debug')) {
+        if ($this->debugMode) {
             info('B2C Transaction Data: ' . json_encode($data));
             info('B2C Transaction Response Data: ' . $result);
         }
@@ -400,7 +403,7 @@ class Mpesa
         $result = $this->makeRequest($url, $data);
 
         // log the request and response data if debug is enabled on the config file
-        if (config('mpesa.debug')) {
+        if ($this->debugMode) {
             info('Validated B2C Transaction Data: ' . json_encode($data));
             info('Validated B2C Transaction Response Data: ' . $result);
         }
@@ -459,7 +462,7 @@ class Mpesa
         $result = $this->makeRequest($url, $data);
 
         // log the request and response data if debug is enabled on the config file
-        if (config('mpesa.debug')) {
+        if ($this->debugMode) {
             info('B2B Paybill Data: ' . json_encode($data));
             info('B2B Paybill Response Data: ' . $result);
         }
@@ -516,7 +519,7 @@ class Mpesa
         $result = $this->makeRequest($url, $data);
 
         // log the request and response data if debug is enabled on the config file
-        if (config('mpesa.debug')) {
+        if ($this->debugMode) {
             info('B2B Buy Goods Data: ' . json_encode($data));
             info('B2B Buy Goods Response Data: ' . $result);
         }
@@ -571,7 +574,7 @@ class Mpesa
         $result = $this->makeRequest($url, $data);
 
         // log the request and response data if debug is enabled on the config file
-        if (config('mpesa.debug')) {
+        if ($this->debugMode) {
             info('Transaction Status Data: ' . json_encode($data));
             info('Transaction Status Response Data: ' . $result);
         }
@@ -617,7 +620,7 @@ class Mpesa
         $result = $this->makeRequest($url, $data);
 
         // log the request and response data if debug is enabled on the config file
-        if (config('mpesa.debug')) {
+        if ($this->debugMode) {
             info('Dynamic QR Data: ' . json_encode($data));
             info('Dynamic QR Response Data: ' . $result);
         }
@@ -659,7 +662,7 @@ class Mpesa
         $result = $this->makeRequest($url, $data);
 
         // log the request and response data if debug is enabled on the config file
-        if (config('mpesa.debug')) {
+        if ($this->debugMode) {
             info('Bill Manager Optin Data: ' . json_encode($data));
             info('Bill Manager Optin Response Data: ' . $result);
         }
@@ -706,7 +709,7 @@ class Mpesa
         $result = $this->makeRequest($url, $data);
 
         // log the request and response data if debug is enabled on the config file
-        if (config('mpesa.debug')) {
+        if ($this->debugMode) {
             info('Send Invoice Data: ' . json_encode($data));
             info('Send Invoice Response Data: ' . $result);
         }
@@ -763,7 +766,7 @@ class Mpesa
         $result = $this->makeRequest($url, $data);
 
         // log the request and response data if debug is enabled on the config file
-        if (config('mpesa.debug')) {
+        if ($this->debugMode) {
             info('Tax Remittance Data: ' . json_encode($data));
             info('Tax Remittance Response Data: ' . $result);
         }
