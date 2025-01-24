@@ -369,7 +369,7 @@ class Mpesa
      * @result - The result of the request: \Illuminate\Http\Client\Response
      */
 
-    public function b2cTopup($accountReference, $receiverShortCode, $amount, $resultUrl, $timeoutUrl, $remarks)
+    public function b2cTopup($accountReference, $receiverShortCode, $amount, $remarks)
     {
         $url = $this->url . '/mpesa/b2b/v1/paymentrequest';
         $data = [
@@ -384,8 +384,8 @@ class Mpesa
             'AccountReference'          =>  $accountReference,
             'Requester'                 =>  $this->sanitizePhoneNumber('254708374149'),
             'Remarks'                   =>  $remarks,
-            'QueueTimeOutURL'           =>  $timeoutUrl,
-            'ResultURL'                 =>  $resultUrl
+            'QueueTimeOutURL'           =>  config('mpesa.b2c_topup_timeout_url'),
+            'ResultURL'                 =>  config('mpesa.b2c_topup_result_url')
         ];
 
         // check if $data['ResultURL] is set and that it is a valid url
@@ -597,7 +597,7 @@ class Mpesa
      * @result - The result of the request: \Illuminate\Http\Client\Response
      */
 
-    public function b2bExpressCheckout($destShortcode, $partnerName, $amount, $paymentReference, $callbackUrl, $requestRefID)
+    public function b2bExpressCheckout($destShortcode, $partnerName, $amount, $paymentReference, $requestRefID)
     {
         $url = $this->url . '/v1/ussdpush/get-msisdn';
         $data = [
@@ -606,7 +606,7 @@ class Mpesa
             'partnerName' => $partnerName,
             'amount' => floor($amount),
             'paymentRef' => $paymentReference,
-            'callbackUrl' => $callbackUrl,
+            'callbackUrl' => config('mpesa.b2b_express_checkout_url'),
             'RequestRefID' => $requestRefID
         ];
 
@@ -895,7 +895,7 @@ class Mpesa
      * @result - The result of the request: \Illuminate\Http\Client\Response
      */
 
-    public function ratiba($name, $startDate, $endDate, $transactionType, $amount, $phoneNumber, $callbackUrl, $accountReference, $transactionDesc, $frequency)
+    public function ratiba($name, $startDate, $endDate, $transactionType, $amount, $phoneNumber, $accountReference, $transactionDesc, $frequency)
     {
         $url = $this->url . '/standingorder/v1/createStandingOrderExternal';
         $data = [
@@ -907,7 +907,7 @@ class Mpesa
             'ReceiverPartyIdentifierType' => $this->getIdentifierType($transactionType),
             'Amount' => floor($amount),
             'PartyA' => $this->sanitizePhoneNumber($phoneNumber),
-            'CallBackURL' => $callbackUrl,
+            'CallBackURL' => config('mpesa.ratiba_callback_url'),
             'AccountReference' => $accountReference,
             'TransactionDesc' => $transactionDesc,
             'Frequency' => $this->ratibaFrequency($frequency),
