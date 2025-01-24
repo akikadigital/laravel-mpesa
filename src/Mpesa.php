@@ -950,7 +950,7 @@ class Mpesa
             'ShortCode' => $this->mpesaShortCode,
             'StartDate' => date('Y-m-d H:i:s', strtotime($startDate)),
             'EndDate' => date('Y-m-d H:i:s', strtotime($endDate)),
-            'OffSetValue' => 0
+            'OffSetValue' => $offset
         ];
 
         // make the request
