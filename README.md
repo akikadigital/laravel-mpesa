@@ -24,6 +24,7 @@ Add the following configurations into the .env file
 
 ```
 MPESA_ENV=
+MPESA_APP_DEBUG=
 MPESA_SHORTCODE=
 MPESA_CONSUMER_KEY=
 MPESA_CONSUMER_SECRET=

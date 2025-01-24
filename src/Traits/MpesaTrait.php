@@ -56,8 +56,45 @@ trait MpesaTrait
             case "shortcode":
                 $x = 4;
                 break;
+            case "paybill":
+                $x = 4;
+                break;
         }
         return $x;
+    }
+
+    /**
+     *   Get the transaction type given the type
+     */
+
+    function ratibaTransactionType($type)
+    {
+        $types = [
+            'paybill' => 'Standing Order Customer Pay Bill',
+            'tillnumber' => 'Standing Order Customer Pay Marchant',
+        ];
+
+        return $types[$type];
+    }
+
+    /**
+     *   Get the frequency given the frequency
+     */
+
+    function ratibaFrequency($frequency)
+    {
+        $frequencies = [
+            'one-off' => 1,
+            'daily' => 2,
+            'weekly' => 3,
+            'monthly' => 4,
+            'bi-monthly' => 5,
+            'quarterly' => 6,
+            'half-year' => 7,
+            'yearly' => 8,
+        ];
+
+        return $frequencies[$frequency];
     }
 
     /**
