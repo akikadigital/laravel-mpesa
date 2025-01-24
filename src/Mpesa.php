@@ -705,7 +705,7 @@ class Mpesa
      * 
      */
 
-    public function dynamicQR($merchantName, $refNo, $amount, $trxCode, $cpi, $size)
+    public function dynamicQR($merchantName, $refNo, $trxCode, $cpi, $size, $amount = null)
     {
         $url = $this->url . '/mpesa/qrcode/v1/generate';
         $data = [
@@ -737,19 +737,20 @@ class Mpesa
      * This API is used to optin to the bill manager service.
      * @param $email - The email address of the business
      * @param $phoneNumber - The phone number of the business
+     * @param $sendReminders - This field gives you the flexibility as a business to enable or disable sms payment reminders for invoices sent. [0 | 1]
      * 
      * @result - The result of the request: \Illuminate\Http\Client\Response
      */
 
-    public function billManagerOptin($email, $phoneNumber)
+    public function billManagerOptin($email, $phoneNumber, $sendReminders)
     {
         $url = $this->url . "/v1/billmanager-invoice/optin";
         $data = [
             'ShortCode' => $this->mpesaShortCode,
             'email' => $email,
             'officialContact' => $this->sanitizePhoneNumber($phoneNumber),
-            'sendReminders' => '1', // [0 | 1] This field gives you the flexibility as a business to enable or disable sms payment reminders for invoices sent.
-            'logo' => config('mpesa.confirmation_url'), // Optional : Image to be embedded in the invoices and receipts sent to your customer.
+            'sendReminders' => $sendReminders ? 1 : 0, // [0 | 1] This field gives you the flexibility as a business to enable or disable sms payment reminders for invoices sent.
+            'logo' => config('mpesa.logo_url'), // Optional : Image to be embedded in the invoices and receipts sent to your customer.
             'callbackurl' => config('mpesa.bill_optin_callback_url')
         ];
 

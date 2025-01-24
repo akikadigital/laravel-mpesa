@@ -41,7 +41,8 @@ return [
     'b2b_result_url' => env('MPESA_B2B_RESULT_URL'),
 
     // ------------- bill manager optin urls -------------
-    'bill_optin_callback_url' => env('MPESA_BILL_OPTIN_CALLBACK_URL'),
+    'logo_url' => env('MPESA_BILL_MANAGER_LOGO_URL'),
+    'bill_optin_callback_url' => env('MPESA_BILL_MANAGER_OPTIN_CALLBACK_URL'),
 
     // ------------- tax remmitance urls -------------
     'tax_remittance_timeout_url' => env('MPESA_TAX_REMITTANCE_TIMEOUT_URL'),
