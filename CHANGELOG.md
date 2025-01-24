@@ -34,3 +34,7 @@
 - Adds B2C account top up
 - Adds MPesa Ratiba API
 - Adds Mpesa Transaction History API
+
+## 0.0.9
+
+- Updates composer.json
