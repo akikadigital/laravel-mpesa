@@ -38,3 +38,7 @@
 ## 0.0.9
 
 - Updates composer.json
+
+## 0.1.0
+
+- Updates typo on b2cTransaction conversationId

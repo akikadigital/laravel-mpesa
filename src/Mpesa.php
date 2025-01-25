@@ -315,11 +315,11 @@ class Mpesa
      * @result - The result of the request: \Illuminate\Http\Client\Response
      */
 
-    public function b2cTransaction($oversationId, $commandID, $msisdn, $amount, $remarks, $ocassion = null)
+    public function b2cTransaction($coversationId, $commandID, $msisdn, $amount, $remarks, $ocassion = null)
     {
         $url = $this->url . '/mpesa/b2c/v1/paymentrequest';
         $data = [
-            'OriginatorConversationID' => $oversationId, // This is a unique string you specify for every API request you simulate
+            'OriginatorConversationID' => $coversationId, // This is a unique string you specify for every API request you simulate
             'InitiatorName'         =>  $this->initiatorName, // This is an API user created by the Business Administrator of the M-PESA
             'SecurityCredential'    =>  $this->securityCredential, // This is the value obtained after encrypting the API initiator password.
             'CommandID'             =>  $commandID, // This is a unique command that specifies B2C transaction type.
