@@ -302,7 +302,7 @@ class Mpesa
     /**
      * This API enables Business to Customer (B2C) transactions between a company and customers who are the end-users of its products or services.
      * It is used to send money from a company to customers e.g. salaries, winnings, refunds, etc.
-     * @param $oversationId - This is a unique string you specify for every API request you simulate
+     * @param $coversationId - This is a unique string you specify for every API request you simulate
      * @param $commandID - This is a unique command that specifies B2C transaction type.
             - SalaryPayment: This supports sending money to both registered and unregistered M-Pesa customers.
             - BusinessPayment: This is a normal business to customer payment, supports only M-PESA registered customers.
