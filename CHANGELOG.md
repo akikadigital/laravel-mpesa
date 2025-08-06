@@ -62,3 +62,7 @@
 ## 0.1.5
 
 - Adds support for laravel 12
+
+## 0.1.6
+
+- Fixes api url bug
