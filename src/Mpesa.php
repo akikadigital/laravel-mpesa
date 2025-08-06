@@ -548,7 +548,7 @@ class Mpesa
             'SecurityCredential'        =>  $this->securityCredential,
             'CommandID'                 =>  'BusinessBuyGoods', // This specifies the type of transaction being performed. There are five allowed values on the API: BusinessPayBill, BusinessBuyGoods, DisburseFundsToBusiness, BusinessToBusinessTransfer or MerchantToMerchantTransfer.
             'SenderIdentifierType'      =>  $this->getIdentifierType("shortcode"),
-            'RecieverIdentifierType'    =>  $this->getIdentifierType("shortcode"),
+            'RecieverIdentifierType'    =>  $this->getIdentifierType("tillnumber"),
             'Amount'                    =>  floor($amount), // remove decimal points
             'PartyA'                    =>  $this->mpesaShortCode,
             'PartyB'                    =>  $destShortcode,

@@ -42,3 +42,23 @@
 ## 0.1.0
 
 - Updates typo on b2cTransaction conversationId
+
+## 0.1.1
+
+- Updates result url for fetch balance
+
+## 0.1.2
+
+- Updates Logging
+
+## 0.1.3
+
+- Updates generatePassword function
+
+## 0.1.4
+
+- Adds content type to Mpesa Post
+
+## 0.1.5
+
+- Adds support for laravel 12
