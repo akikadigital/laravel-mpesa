@@ -41,6 +41,19 @@ class Mpesa
         $this->consumerSecret = config('mpesa.consumer_secret');
     }
 
+    public function getToken()
+    {
+        $result = $this->fetchToken();
+
+        // log the request and response data if debug is enabled on the config file
+        if ($this->debugMode) {
+            info('Get Token: ' . $result);
+        }
+
+        // return the result
+        return $result;
+    }
+
     // --------------------------------- Account Balance ---------------------------------
 
     /**

@@ -15,7 +15,7 @@ trait MpesaTrait
      *   If it does not exist or is expired, generate a new token and save it to the database
      */
 
-    function getToken()
+    function fetchToken()
     {
         $url = $this->url . '/oauth/v1/generate?grant_type=client_credentials';
         $response = Http::withBasicAuth($this->consumerKey, $this->consumerSecret)
@@ -31,7 +31,7 @@ trait MpesaTrait
     function makeRequest($url, $body)
     {
         // Convert the above code to use Http
-        $token = json_decode($this->getToken());
+        $token = json_decode($this->fetchToken());
         $response = Http::withToken($token->access_token)
             ->acceptJson()
             ->post($url, $body);
