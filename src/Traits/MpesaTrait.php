@@ -131,8 +131,11 @@ trait MpesaTrait
      *   Sanitize the phone number by getting rid of the leading 0 and replacing it with 254
      */
 
-    function sanitizePhoneNumber($phoneNumber)
+    function sanitizePhoneNumber($phoneNumber = null)
     {
+        if (!$phoneNumber) {
+            return null;
+        }
         $phoneNumber = str_replace(" ", "", $phoneNumber); // remove spaces
         $phone_number = "254" . substr($phoneNumber, -9); // remove leading 0 and replace with 254
         return $phone_number;
@@ -146,7 +149,7 @@ trait MpesaTrait
     {
         // check if $url is a valid url and has not include keywords like mpesa,safaricom etc
         if (filter_var($url, FILTER_VALIDATE_URL)) {
-            if (strpos($url, 'mpesa') !== false || strpos($url, 'safaricom') !==false || strpos($url, 'daraja') !== false) {
+            if (strpos($url, 'mpesa') !== false || strpos($url, 'safaricom') !== false || strpos($url, 'daraja') !== false) {
                 return false;
             }
             return true;
