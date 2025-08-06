@@ -17,9 +17,9 @@ trait MpesaTrait
 
     function fetchToken()
     {
-        $url = $this->url . '/oauth/v1/generate?grant_type=client_credentials';
+        $this->url = $this->url . '/oauth/v1/generate?grant_type=client_credentials';
         $response = Http::withBasicAuth($this->consumerKey, $this->consumerSecret)
-            ->get($url);
+            ->get($this->url);
 
         return $response;
     }

@@ -2,10 +2,8 @@
 
 namespace Akika\LaravelMpesa;
 
-use Akika\LaravelMpesa\Models\Token;
 use Akika\LaravelMpesa\Traits\MpesaTrait;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Http;
 
 class Mpesa
 {
@@ -31,7 +29,7 @@ class Mpesa
     {
         $this->environment = config('mpesa.env');
         $this->debugMode = config('mpesa.debug');
-        $this->url = config('mpesa.' . $this->environment . '.url');
+        $this->url = config('mpesa.url.' . $this->environment);
 
         $this->mpesaShortCode = config('mpesa.shortcode');
         $this->initiatorName = config('mpesa.initiator_name');

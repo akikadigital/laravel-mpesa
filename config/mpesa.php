@@ -4,6 +4,10 @@ return [
     // Define mpesa environment
     'env' => env('MPESA_ENV', 'sandbox'),
     'debug' => env('MPESA_APP_DEBUG', true),
+    'url' => [
+        'sandbox' => env('MPESA_SANDBOX_URL', 'https://sandbox.safaricom.co.ke'),
+        'production' => env('MPESA_PRODUCTION_URL', 'https://api.safaricom.co.ke'),
+    ],
 
     // Define mpesa shortcode
     'shortcode' => env('MPESA_SHORTCODE', '174379'),

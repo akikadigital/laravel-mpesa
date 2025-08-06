@@ -1,6 +1,6 @@
 <?php
 
-namespace Akika\Mpesa\Facades;
+namespace Akika\LaravelMpesa\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
