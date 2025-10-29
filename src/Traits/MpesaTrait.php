@@ -101,9 +101,8 @@ trait MpesaTrait
      *   Generate the password for the STK push
      */
 
-    function generatePassword()
+    function generatePassword($timestamp)
     {
-        $timestamp = Carbon::now()->format('YmdHis');
         $shortcode = config('mpesa.shortcode');
         $passkey = config('mpesa.stk_passkey');
         $password = base64_encode($shortcode . $passkey . $timestamp);

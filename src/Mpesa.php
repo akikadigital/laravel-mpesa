@@ -191,10 +191,11 @@ class Mpesa
     public function stkPush($accountNumber, $phoneNumber, $amount, $transactionDesc = null)
     {
         $url = $this->url . '/mpesa/stkpush/v1/processrequest';
+        $timestamp = date('YmdHis');
         $data = [
             'BusinessShortCode'     => $this->mpesaShortCode,
-            'Password'              => $this->generatePassword(), // base64.encode(Shortcode+Passkey+Timestamp)
-            'Timestamp'             => Carbon::rawParse('now')->format('YmdHis'),
+            'Password'              => $this->generatePassword($timestamp),
+            'Timestamp'             => $timestamp,
             'TransactionType'       => 'CustomerPayBillOnline',
             'Amount'                => floor($amount), // remove decimal points
             'PartyA'                => $this->sanitizePhoneNumber($phoneNumber),
@@ -236,10 +237,11 @@ class Mpesa
     public function stkPushStatus($checkoutRequestID)
     {
         $url = $this->url . '/mpesa/stkpushquery/v1/query';
+        $timestamp = date('YmdHis');
         $data = [
             'BusinessShortCode'     => $this->mpesaShortCode,
-            'Password'              => $this->generatePassword(),
-            'Timestamp'             => Carbon::rawParse('now')->format('YmdHis'), // Date in format - YYYYMMDDHHmmss
+            'Password'              => $this->generatePassword($timestamp),
+            'Timestamp'             => $timestamp,
             'CheckoutRequestID'     => $checkoutRequestID // This is a global unique identifier of the processed checkout transaction request.
         ];
 
